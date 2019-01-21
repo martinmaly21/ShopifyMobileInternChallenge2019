@@ -18,12 +18,10 @@ class CollectionDetailCell: UICollectionViewCell {
             for product in (product?.variants)! {
                 tempTotal += product.inventory_quantity!
             }
-           productInventory.text = "\(tempTotal) items left in stock!"
-           setUpImage()
+            productInventory.text = "\(tempTotal) items left in stock!"
+            setUpImage()
         }
-        
     }
-    //TODO: render out image
     
     let productTitle: UILabel = {
         let pt = UILabel()
@@ -70,8 +68,7 @@ class CollectionDetailCell: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
+
     private func setUpCell() {
         layer.cornerRadius = 10
         backgroundColor = UIColor.white
@@ -117,8 +114,6 @@ class CollectionDetailCell: UICollectionViewCell {
         productInventory.topAnchor.constraint(equalTo: productVendor.bottomAnchor).isActive = true
         productInventory.contentMode = .center
         productInventory.textAlignment = .center
-        
-        
     }
     
     private func setUpImage() {
@@ -129,14 +124,11 @@ class CollectionDetailCell: UICollectionViewCell {
                     //alert user
                     print(error!)
                 } else {
-                    
                     DispatchQueue.main.async {
                         self.productImage.image = UIImage(data: data!)
                     }
                 }
-            }.resume()
-            
+                }.resume()
         }
     }
-    
 }

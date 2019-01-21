@@ -8,7 +8,8 @@
 
 import UIKit
 
-//TODO: explain why this was necessary https://stackoverflow.com/questions/28517866/how-to-set-the-alpha-of-an-uiimage-in-swift-programmatically 
+//Simple extension on UIImage used to alter the alpha of various images throughout application
+//Code found at: https://stackoverflow.com/questions/28517866/how-to-set-the-alpha-of-an-uiimage-in-swift-programmatically 
 extension UIImage {
     
     func alpha(_ value:CGFloat) -> UIImage {
@@ -18,4 +19,5 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return newImage!
     }
+    
 }

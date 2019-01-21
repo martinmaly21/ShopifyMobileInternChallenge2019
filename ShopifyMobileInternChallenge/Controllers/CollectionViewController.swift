@@ -8,44 +8,42 @@
 
 import UIKit
 
-class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class CollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    var collections: [Collection]?
+    var collections: [Collection] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         customizeNavBar()
         collectionViewSetup()
         loadCollectionJson()
+        let backButton = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+        backButton.tintColor = UIColor.white
+        navigationItem.backBarButtonItem = backButton
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return collections?.count ?? 0
+        return collections.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CollectionCell
-        if let collect = collections {
-            cell.collection = collect[indexPath.item]
-        }
+        cell.collection = collections[indexPath.item]
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //code to run when an item in the collection view is selected
-        let cell = collectionView.cellForItem(at: indexPath) as! CollectionCell
         let destVC = CollectionDetailsPage()
-        destVC.collectionTitle = cell.collection?.title
-        destVC.collectionDescription = cell.collection?.body_html
-        destVC.collectionImageString = cell.collection?.image?.src
-        destVC.collectionID = cell.collection?.id
+        destVC.collectionTitle = collections[indexPath.item].title
+        destVC.collectionDescription = collections[indexPath.item].body_html
+        destVC.collectionImageString = collections[indexPath.item].image?.src
+        destVC.collectionID = collections[indexPath.item].id
         self.navigationController?.pushViewController(destVC, animated: true)
     }
 
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        //note that each image is 300x300, which allows for consistent sizing of collection view cells
-        //the remaining fifty pixels will be used for the label (and maybe description)
         let widthOfCell = ( collectionView.frame.width / 2 ) - 15
         let heightOfCell = widthOfCell + 30
         let sizeOfCell = CGSize(width: widthOfCell, height: heightOfCell)
@@ -77,7 +75,6 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
         guard let url = URL(string: collectionJsonURL) else { return }
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if error != nil {
-                //alert user
                 print(error!)
                 return
             } else {
@@ -85,7 +82,6 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 do {
                     let collectionArray = try JSONDecoder().decode(CollectionArray.self, from: data)
                     self.collections = [Collection]()
-                    
                     for collection in collectionArray.custom_collections {
                         var collectionCell = Collection()
                         collectionCell.title = collection.title
@@ -93,15 +89,12 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
                         collectionCell.image = collection.image
                         collectionCell.body_html = collection.body_html
                         collectionCell.image?.src = (collection.image?.src)!
-                        self.collections?.append(collectionCell)
+                        self.collections.append(collectionCell)
                     }
-    
                     DispatchQueue.main.async {
                         self.collectionView?.reloadData()
                     }
-                    
                 } catch let jsonErr {
-                    //change alert message?
                     print(jsonErr)
                 }
             }
@@ -117,11 +110,10 @@ class ViewController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView.addSubview(title)
         title.leftAnchor.constraint(equalTo: collectionView.leftAnchor).isActive = true
         title.topAnchor.constraint(equalTo: collectionView.topAnchor, constant: -40).isActive = true
-        title.text = "Your Collections"
+        title.text = "My Collections"
         title.textColor = UIColor.white
         let fontDescriptor = UIFontDescriptor(name: "HelveticaNeue-Bold", size: 0)
         title.font = UIFont(descriptor: fontDescriptor, size: 25)
     }
-    
 }
 

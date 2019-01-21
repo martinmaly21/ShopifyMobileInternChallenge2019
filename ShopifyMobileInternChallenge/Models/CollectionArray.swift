@@ -16,7 +16,6 @@ struct Collection: Decodable {
     var id: Int?
     var title: String?
     var body_html: String?
-    var productIDs : [Int]?
     var image: CollectionImage?
 }
 

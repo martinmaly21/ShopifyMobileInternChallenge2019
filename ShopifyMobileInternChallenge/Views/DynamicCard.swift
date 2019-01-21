@@ -12,9 +12,6 @@ class DynamicCard: UICollectionViewCell {
     
     let cardImageView: UIImageView = {
         let iv = UIImageView()
-        //will need to get rid of image (also will probably need to find a more clever way to implement image) 
-//        iv.image = UIImage(named: "test.png")
-//        iv.image = iv.image?.alpha(0.4)
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
@@ -33,7 +30,6 @@ class DynamicCard: UICollectionViewCell {
         let l = UILabel()
         let fontDescriptor = UIFontDescriptor(name: "HelveticaNeue-Medium", size: 0)
         l.font = UIFont(descriptor: fontDescriptor, size: 18)
-        //will need to get rid of text
         l.textColor = UIColor.rgb(red: 38, green: 44, blue: 82)
         l.translatesAutoresizingMaskIntoConstraints = false
         return l
@@ -71,6 +67,7 @@ class DynamicCard: UICollectionViewCell {
         cardTitle.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         cardTitle.centerYAnchor.constraint(equalTo: topAnchor, constant: 40).isActive = true
         cardTitle.textAlignment = .center
+        
         //add description title
         addSubview(cardDescription)
         
@@ -82,6 +79,4 @@ class DynamicCard: UICollectionViewCell {
         cardDescription.textAlignment = .center
         
     }
-    
-    
 }

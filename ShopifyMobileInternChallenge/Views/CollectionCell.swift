@@ -75,7 +75,6 @@ class CollectionCell: UICollectionViewCell {
             guard let url = URL(string: imageURL) else { return }
             URLSession.shared.dataTask(with: url) { (data, response, error) in
                 if error != nil {
-                    //alert user
                     print(error!)
                     return
                 } else {

@@ -8,19 +8,19 @@
 
 import UIKit
 
+//README: Although the instructions stated that each row in the 'Collection Details Page' should include the collection title and collection image, I made the decision to instead have the vendor and product image displayed in each row. I did this to avoid repetitivenes and allow the UI to be more aesthetically pleasing. I deeply apologize if this was not what I should have done. 
+
 class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout  {
     
-    let layout = UICollectionViewFlowLayout()
-    lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    private let layout = UICollectionViewFlowLayout()
+    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     
     var collectionTitle: String?
     var collectionDescription: String?
     var collectionImageString: String?
-    //might have to make this lazy depending on what happens
     var collectionID: Int?
     
     var products: [Product] = []
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,8 +34,6 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        //return actual count in due time
         return products.count + 1
     }
     
@@ -45,11 +43,9 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
             cell1.cardTitle.text = self.collectionTitle
             cell1.cardDescription.text = self.collectionDescription
             let imageURL = self.collectionImageString
-            
             let url = URL(string: imageURL!)
             URLSession.shared.dataTask(with: url!) { (data, response, error) in
                 if error != nil {
-                    //alert user
                     print(error!)
                     return
                 } else {
@@ -59,7 +55,6 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
                     }
                 }
                 }.resume()
-            
             return cell1
         } else {
             let cell2 = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell2", for: indexPath) as! CollectionDetailCell
@@ -71,10 +66,9 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var widthOfCell = ( collectionView.frame.width / 2 ) - 15
         let heightOfCell = widthOfCell + 100
-        
         if indexPath.item == 0 {
             widthOfCell = widthOfCell * 2 + 10
-            //TODO: Explain why i thought dynamic resizing was unnecessary
+            //This is where I would have adjusted the cell height dynamically depending on the description text. However, due to the way I set up my UI I did not see it necessary to do so, and instead thought the consistency would be more appealing.
         }
         let sizeOfCell = CGSize(width: widthOfCell, height: heightOfCell)
         return sizeOfCell
@@ -83,7 +77,6 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 10
     }
-    
     
     private func setUpCollectionView() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -100,17 +93,15 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
         collectionView.addSubview(title)
         title.leftAnchor.constraint(equalTo: collectionView.leftAnchor).isActive = true
         title.topAnchor.constraint(equalTo: collectionView.topAnchor, constant: -40).isActive = true
-        title.text = "Your Products"
+        title.text = "My Products"
         title.textColor = UIColor.white
         let fontDescriptor = UIFontDescriptor(name: "HelveticaNeue-Bold", size: 0)
         title.font = UIFont(descriptor: fontDescriptor, size: 25)
-        //        self.navigationItem.setHidesBackButton(true, animated: false)
-        
     }
     
-    private func getProductURL(_ integerArray: [Int]) -> String {
+    private func getProductURL(_ productIDArray: [Int]) -> String {
         var cancatenatedString = ""
-        for number in integerArray {
+        for number in productIDArray {
             cancatenatedString += "\(number),"
         }
         cancatenatedString.removeLast()
@@ -139,7 +130,6 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
                         guard let url = URL(string: productJsonUrl) else { return }
                         URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
                             if error != nil {
-                                //alert user
                                 print(error!)
                             } else {
                                 guard let data = data else { return }
@@ -153,21 +143,19 @@ class CollectionDetailsPage: UIViewController, UICollectionViewDataSource, UICol
                                         productCell.vendor = product.vendor
                                         productCell.image = product.image
                                         productCell.variants = product.variants
-
+                                        
                                         self.products.append(productCell)
                                     }
                                     DispatchQueue.main.async {
                                         self.collectionView.reloadData()
                                     }
                                 } catch let jsonErr {
-                                    //change alert message?
                                     print(jsonErr)
                                 }
                             }
                         }).resume()
                     }
                 } catch let jsonErr {
-                    //change alert message?
                     print(jsonErr)
                 }
             }
